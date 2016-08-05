@@ -6,12 +6,12 @@ import buildElasticCall from '../utils/build-elastic-call';
 import ENV from '../config/environment';
 import { termsFilter, dateRangeFilter } from '../utils/elastic-query';
 
+let filterQueryParams = ['type', 'tags', 'sources', 'publisher', 'funder', 'institution', 'organization', 'language', 'contributors'];
 export default ApplicationController.extend({
-    filterQueryParams: ['type', 'tags', 'sources', 'publisher', 'funder', 'institution', 'organization', 'language', 'contributors'],
     associationFilters: ['publisher', 'funder', 'institution', 'organization'],
     queryParams: Ember.computed(function() {
         let allParams = ['searchString', 'start', 'end'];
-        allParams.push(...this.get('filterQueryParams'));
+        allParams.push(...filterQueryParams);
         return allParams;
     }),
 
@@ -192,6 +192,15 @@ export default ApplicationController.extend({
             { key: 'language', title: 'Language', component: 'search-facet-language', param: this.get('language'), facetFilters: this.get('facetFilters') },
             { key: 'contributors', title: 'People', type: 'person', useId: true, component: 'search-facet-person', param: this.get('contributors'), facetFilters: this.get('facetFilters') },
         ];
+    }),
+
+    facetStates: Ember.computed(...filterQueryParams, function() {
+        let facetStates = {};
+        for(let param of filterQueryParams) {
+            facetStates[param] = this.get(param);
+        }
+        debugger;
+        return facetStates;
     }),
 
     atomFeedUrl: Ember.computed('queryBody', function() {
