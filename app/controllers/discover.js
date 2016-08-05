@@ -116,7 +116,7 @@ export default ApplicationController.extend({
             query,
             from: (page - 1) * this.get('size'),
         };
-        if (page == 1) {
+        if (page === 1) {
             queryBody.aggregations = this.get('elasticAggregations');
         }
 
